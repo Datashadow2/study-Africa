@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flashcards - Prideland Academy</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <div class="dashboard">
+
+    <!-- HEADER -->
+    <div class="topbar">
+      <div>
+        <h2>🎴 Flashcards Study Mode</h2>
+        <p id="sessionStatus" class="small-text">Ready to study</p>
+      </div>
+
+      <button class="btn secondary" onclick="window.location.href='student-notes.html'">
+        ← Back to Notes
+      </button>
+    </div>
+
+    <!-- NOTE SELECTOR -->
+    <div class="card">
+
+      <h3>📖 Select a Note to Study</h3>
+
+      <div class="selector-row">
+
+        <select id="noteSelector">
+          <option value="">Loading notes...</option>
+        </select>
+
+        <div class="selector-options">
+          <label>
+            <input type="checkbox" id="includeAI">
+            🤖 AI Flashcards
+          </label>
+
+          <label>
+            <input type="checkbox" id="includeExamples">
+            📝 Include Examples
+          </label>
+        </div>
+
+      </div>
+
+      <div class="button-group">
+        <button class="btn primary" onclick="generateFlashcards()">
+          🎴 Generate Flashcards
+        </button>
+
+        <button class="btn secondary" onclick="loadPreviousSession()">
+          🔄 Last Session
+        </button>
+      </div>
+
+    </div>
+
+    <!-- STUDY SETTINGS -->
+    <div class="card">
+
+      <h3>⚙️ Study Settings</h3>
+
+      <div class="settings-grid">
+
+        <div class="setting-group">
+          <label>🎯 Mode</label>
+          <select id="studyMode">
+            <option value="all">All Cards</option>
+            <option value="unmastered">Unmastered Only</option>
+            <option value="hard">Hard Cards Only</option>
+            <option value="review">Review Mode</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <label>🔀 Order</label>
+          <select id="cardOrder">
+            <option value="sequential">Sequential</option>
+            <option value="shuffled">Shuffled</option>
+            <option value="hardest">Hardest First</option>
+          </select>
+        </div>
+
+        <div class="setting-group">
+          <label>⏱ Speed</label>
+          <select id="speedSelect">
+            <option value="2000">Fast</option>
+            <option value="3000" selected>Normal</option>
+            <option value="5000">Slow</option>
+            <option value="0">Manual</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="toggle-group">
+
+        <label>
+          <input type="checkbox" id="autoFlip">
+          🔄 Auto Flip
+        </label>
+
+        <label>
+          <input type="checkbox" id="soundEnabled">
+          🔊 Sound
+        </label>
+
+        <label>
+          <input type="checkbox" id="darkMode">
+          🌙 Dark Mode
+        </label>
+
+      </div>
+
+    </div>
+
+    <!-- PROGRESS -->
+    <div id="progressSection" class="card hidden">
+
+      <div class="stats-row">
+
+        <div class="stat-box">
+          <span class="stat-value" id="masteredCount">0</span>
+          <span class="stat-label">Mastered</span>
+        </div>
+
+        <div class="stat-box">
+          <span class="stat-value" id="totalCards">0</span>
+          <span class="stat-label">Total</span>
+        </div>
+
+        <div class="stat-box">
+          <span class="stat-value" id="accuracyRate">0%</span>
+          <span class="stat-label">Accuracy</span>
+        </div>
+
+        <div class="stat-box">
+          <span class="stat-value" id="sessionTimer">00:00</span>
+          <span class="stat-label">Time</span>
+        </div>
+
+      </div>
+
+      <div class="progress-bar-container">
+        <div id="studyProgress" class="progress-fill"></div>
+      </div>
+
+    </div>
+
+    <!-- FLASHCARD AREA -->
+    <div id="flashcardContainer" class="flashcard-container hidden">
+
+      <div class="flashcard-wrapper">
+
+        <div class="flashcard" id="flashcard" onclick="flipCard()">
+
+          <div id="cardFront" class="card-face front">
+            Click generate to start
+          </div>
+
+          <div id="cardBack" class="card-face back">
+            Answer will appear here
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- RATING -->
+      <div id="ratingButtons" class="rating-buttons hidden">
+
+        <button onclick="rateCard('easy')" class="rate-btn easy">😊 Easy</button>
+        <button onclick="rateCard('medium')" class="rate-btn medium">😐 Medium</button>
+        <button onclick="rateCard('hard')" class="rate-btn hard">😓 Hard</button>
+        <button onclick="markMastered()" class="rate-btn mastered">⭐ Mastered</button>
+
+      </div>
+
+      <!-- NAVIGATION -->
+      <div class="navigation-controls">
+
+        <button onclick="prevCard()" class="nav-btn">◀ Prev</button>
+
+        <span id="cardProgress">0 / 0</span>
+
+        <button onclick="nextCard()" class="nav-btn">Next ▶</button>
+
+      </div>
+
+      <!-- EXTRA -->
+      <div class="extra-controls">
+
+        <button onclick="shuffleCards()">🔀 Shuffle</button>
+        <button onclick="toggleAutoPlay()">▶ Auto</button>
+        <button onclick="resetSession()">🔄 Reset</button>
+        <button onclick="exportFlashcards()">📥 Export</button>
+
+      </div>
+
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="empty-state hidden">
+      <div class="empty-icon">🎴</div>
+      <h3>No Flashcards Yet</h3>
+      <p>Select a note and generate flashcards to begin</p>
+    </div>
+
+  </div>
+
+</body>
+</html>
