@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Teacher Onboarding</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <div class="dashboard">
+
+    <h2>👩‍🏫 Teacher Onboarding</h2>
+    <p>Strict setup required: profile + first lesson note must be completed to continue</p>
+
+    <!-- STEP 1: PROFILE -->
+    <div class="card">
+
+      <h3>Step 1: Teacher Profile</h3>
+
+      <input id="name" placeholder="Full Name" required>
+      <input id="school" placeholder="School Name" required>
+      <input id="phone" placeholder="Phone Number" required>
+      <input id="email" placeholder="Email Address" type="email" required>
+
+      <label>Curriculum (Required):</label>
+      <select id="curriculumSelect" required>
+        <option value="">-- Select Curriculum --</option>
+        <option value="cbc">CBC</option>
+        <option value="kcse">8-4-4 (KCSE)</option>
+        <option value="igcse">IGCSE / Cambridge</option>
+        <option value="ib">International Baccalaureate</option>
+        <option value="montessori">Montessori</option>
+        <option value="ecde">ECDE</option>
+        <option value="special">Special Needs Education</option>
+        <option value="adult">Adult Education</option>
+      </select>
+
+      <label>Subjects Taught (Required):</label>
+      <select id="subjects" multiple size="6" required>
+        <option value="math">Mathematics</option>
+        <option value="english">English</option>
+        <option value="kiswahili">Kiswahili</option>
+        <option value="science">Science</option>
+        <option value="history">History</option>
+        <option value="geography">Geography</option>
+        <option value="biology">Biology</option>
+        <option value="chemistry">Chemistry</option>
+        <option value="physics">Physics</option>
+        <option value="computer">Computer Studies</option>
+      </select>
+
+      <label>Grades (Required):</label>
+      <select id="grades" multiple size="6" required>
+        <option value="pp1">PP1</option>
+        <option value="pp2">PP2</option>
+        <option value="grade1">Grade 1</option>
+        <option value="grade2">Grade 2</option>
+        <option value="grade3">Grade 3</option>
+        <option value="grade4">Grade 4</option>
+        <option value="grade5">Grade 5</option>
+        <option value="grade6">Grade 6</option>
+        <option value="form1">Form 1</option>
+        <option value="form2">Form 2</option>
+        <option value="form3">Form 3</option>
+        <option value="form4">Form 4</option>
+      </select>
+
+    </div>
+
+    <!-- STEP 2: FIRST NOTE (STRICT GATE) -->
+    <div class="card">
+
+      <h3>Step 2: First Lesson Note (REQUIRED TO CONTINUE)</h3>
+
+      <input id="noteTitle" placeholder="Lesson Title" required>
+
+      <label>Subject:</label>
+      <select id="noteSubject" required>
+        <option value="math">Mathematics</option>
+        <option value="english">English</option>
+        <option value="kiswahili">Kiswahili</option>
+        <option value="science">Science</option>
+        <option value="history">History</option>
+        <option value="geography">Geography</option>
+        <option value="biology">Biology</option>
+        <option value="chemistry">Chemistry</option>
+        <option value="physics">Physics</option>
+        <option value="computer">Computer Studies</option>
+      </select>
+
+      <label>Curriculum:</label>
+      <select id="noteCurriculum" required>
+        <option value="cbc">CBC</option>
+        <option value="kcse">8-4-4</option>
+        <option value="igcse">IGCSE</option>
+        <option value="ib">IB</option>
+        <option value="montessori">Montessori</option>
+        <option value="ecde">ECDE</option>
+      </select>
+
+      <label>Grade:</label>
+      <select id="noteGrade" required>
+        <option value="pp1">PP1</option>
+        <option value="pp2">PP2</option>
+        <option value="grade1">Grade 1</option>
+        <option value="grade2">Grade 2</option>
+        <option value="grade3">Grade 3</option>
+        <option value="grade4">Grade 4</option>
+        <option value="grade5">Grade 5</option>
+        <option value="grade6">Grade 6</option>
+        <option value="form1">Form 1</option>
+        <option value="form2">Form 2</option>
+        <option value="form3">Form 3</option>
+        <option value="form4">Form 4</option>
+      </select>
+
+      <label>Lesson Content (Required):</label>
+      <textarea id="content" rows="10" required></textarea>
+
+      <label>Learning Objectives:</label>
+      <textarea id="objectives" rows="3"></textarea>
+
+      <label>Materials Needed:</label>
+      <input id="materials" placeholder="Books, charts, tools, etc.">
+
+    </div>
+
+    <button class="btn primary full" onclick="submitOnboarding()">
+      Complete Setup
+    </button>
+
+    <p id="status"></p>
+
+  </div>
+
+</body>
+</html>
