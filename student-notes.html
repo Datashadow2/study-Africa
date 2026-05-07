@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes Library - Prideland Academy</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <div class="dashboard">
+
+    <!-- HEADER -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <h2>📚 Notes Library</h2>
+        <span id="totalNotesBadge" class="badge">0 total notes</span>
+      </div>
+
+      <div class="topbar-right">
+        <button class="btn icon-btn" onclick="toggleBookmarksView()" title="My Bookmarks">
+          ⭐ Bookmarks
+        </button>
+        <button class="btn secondary" onclick="window.location.href='student-dashboard.html'">
+          ← Back
+        </button>
+      </div>
+    </div>
+
+    <!-- RECENT SECTION -->
+    <div id="recentSection" class="card hidden">
+      <h3>🕒 Recently Viewed</h3>
+      <div id="recentNotes"></div>
+      <button class="btn-text" onclick="clearRecent()">Clear history</button>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="card">
+
+      <h3>🔍 Search & Filter Notes</h3>
+
+      <div class="search-bar">
+        <input id="searchInput" placeholder="Search notes...">
+        <button class="btn primary" onclick="loadNotes(1)">Search</button>
+      </div>
+
+      <div class="filters-row">
+
+        <div class="filter-group">
+          <label>Subject</label>
+          <select id="filterSubject">
+            <option value="">All</option>
+            <option value="math">Math</option>
+            <option value="english">English</option>
+            <option value="science">Science</option>
+            <option value="history">History</option>
+            <option value="biology">Biology</option>
+            <option value="chemistry">Chemistry</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Grade</label>
+          <select id="filterGrade">
+            <option value="">All</option>
+            <option value="pp1">PP1</option>
+            <option value="pp2">PP2</option>
+            <option value="grade1">Grade 1</option>
+            <option value="grade2">Grade 2</option>
+            <option value="grade3">Grade 3</option>
+            <option value="grade4">Grade 4</option>
+            <option value="form1">Form 1</option>
+            <option value="form2">Form 2</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Curriculum</label>
+          <select id="filterCurriculum">
+            <option value="">All</option>
+            <option value="cbc">CBC</option>
+            <option value="kcse">KCSE</option>
+            <option value="igcse">IGCSE</option>
+            <option value="ib">IB</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label>Sort</label>
+          <select id="sortBy">
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="title_asc">A-Z</option>
+            <option value="title_desc">Z-A</option>
+          </select>
+        </div>
+
+      </div>
+
+      <div class="filter-actions">
+
+        <div class="view-toggle">
+          <button id="gridViewBtn" class="view-btn active" onclick="setView('grid')">
+            Grid
+          </button>
+          <button id="listViewBtn" class="view-btn" onclick="setView('list')">
+            List
+          </button>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn secondary" onclick="resetFilters()">
+            Reset
+          </button>
+          <button class="btn primary" onclick="loadNotes(1)">
+            Search Notes
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-header">
+      <span id="resultsCount">Loading notes...</span>
+      <button class="btn-text" onclick="toggleBookmarksOnly()">
+        ⭐ Bookmarked only
+      </button>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loadingSpinner" class="hidden">
+      <p>Loading notes...</p>
+    </div>
+
+    <!-- NOTES -->
+    <div id="notesContainer"></div>
+
+    <!-- EMPTY -->
+    <div id="emptyState" class="hidden">
+      <h3>No notes found</h3>
+      <p>Try adjusting filters</p>
+      <button class="btn secondary" onclick="resetFilters()">Clear Filters</button>
+    </div>
+
+    <!-- PAGINATION -->
+    <div id="pagination" class="hidden">
+      <button onclick="changePage(-1)">Prev</button>
+      <span id="pageInfo">Page 1</span>
+      <button onclick="changePage(1)">Next</button>
+    </div>
+
+  </div>
+
+</body>
+</html>
