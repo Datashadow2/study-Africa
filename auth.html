@@ -21,9 +21,23 @@
       <option value="teacher">Teacher</option>
     </select>
 
-    <button class="btn primary full" onclick="handleAuth()">
-      Continue
-    </button>
+    <form id="authForm">
+
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+
+  <input type="text" id="fullName" placeholder="Full Name">
+
+  <select id="roleSelect">
+    <option value="student">Student</option>
+    <option value="teacher">Teacher</option>
+  </select>
+
+  <button type="submit" id="submitBtn">
+    Login
+  </button>
+
+</form>
 
     <p id="status"></p>
 
@@ -31,3 +45,4 @@
 
 </body>
 </html>
+<script type="module" src="auth.js"></script>
