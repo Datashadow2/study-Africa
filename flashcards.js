@@ -75,40 +75,74 @@ window.generateFlashcards = async function () {
 
   showLoading(true);
 
-  const { data, error } = await supabase
+  const { data: user } = await supabase.auth.getUser();
+  if (!user?.user) return;
+
+  // 1. CHECK EXISTING FLASHCARDS
+  const { data: existing } = await supabase
+    .from("flashcards")
+    .select("*")
+    .eq("note_id", noteId)
+    .eq("user_id", user.user.id);
+
+  if (existing && existing.length > 0) {
+    flashcards = existing;
+    originalFlashcards = existing;
+    currentIndex = 0;
+
+    showUI();
+    renderCard();
+    showToast("Loaded existing flashcards", "success");
+    showLoading(false);
+    return;
+  }
+
+  // 2. LOAD NOTE
+  const { data: note } = await supabase
     .from("notes")
     .select("*")
     .eq("id", noteId)
     .single();
 
-  if (error || !data) {
-    showToast("Failed to load note", "error");
+  if (!note) {
+    showToast("Note not found", "error");
     showLoading(false);
     return;
   }
 
-  originalFlashcards = buildFlashcards(data.content);
-  flashcards = [...originalFlashcards];
+  // 3. GENERATE CARDS
+  const generated = buildFlashcards(note.content);
 
-  if (!flashcards.length) {
-    showToast("No usable content found", "warning");
+  // 4. SAVE TO DATABASE
+  const toInsert = generated.map(c => ({
+    user_id: user.user.id,
+    note_id: noteId,
+    front: c.front,
+    back: c.back
+  }));
+
+  const { data: saved, error } = await supabase
+    .from("flashcards")
+    .insert(toInsert)
+    .select();
+
+  if (error) {
+    console.error(error);
+    showToast("Failed to save flashcards", "error");
     showLoading(false);
     return;
   }
 
+  flashcards = saved;
+  originalFlashcards = saved;
   currentIndex = 0;
-  resetStats();
-
-  await createSession(data.id, data.title);
 
   showUI();
   renderCard();
-  updateStatsDisplay();
+  showToast(`Created ${saved.length} flashcards`, "success");
 
-  showToast(`Generated ${flashcards.length} cards`, "success");
   showLoading(false);
 };
-
 // =========================
 // SESSION CREATION (SAFE)
 // =========================
