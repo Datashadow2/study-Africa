@@ -1,0 +1,14 @@
+prideland-academy/
+│
+├── index.html
+├── auth.html
+├── student-dashboard.html
+├── teacher-dashboard.html
+│
+├── /assets
+│   ├── styles.css
+│   ├── app.js
+│
+└── /components
+    ├── navbar.js
+    ├── payment-modal.js
