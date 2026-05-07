@@ -1,3 +1,4 @@
+
 prideland-academy/
 │
 ├── index.html
@@ -5,10 +6,12 @@ prideland-academy/
 ├── student-dashboard.html
 ├── teacher-dashboard.html
 │
-├── /assets
+├── assets/
 │   ├── styles.css
-│   ├── app.js
 │
-└── /components
-    ├── navbar.js
-    ├── payment-modal.js
+├── js/
+│   ├── supabase.js
+│   ├── auth.js
+│   ├── student.js
+│   ├── teacher.js
+│   └── payments.js
