@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+
+<body>
+
+  <div class="dashboard">
+
+    <div class="topbar">
+      <h2>📘 Student Dashboard</h2>
+      <button class="btn secondary" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="card">
+      <h3>Premium Status</h3>
+      <p id="premiumStatus">Loading...</p>
+
+      <button class="btn primary" onclick="upgradeToPremium()">
+        Upgrade to Premium (200 KES)
+      </button>
+    </div>
+
+    <div class="grid">
+
+      <div class="card" onclick="openGames()">
+        🎮 <h3>Games Hub</h3>
+        <p>Flashcards, quizzes, learning games</p>
+      </div>
+
+      <div class="card" onclick="openPomodoro()">
+        ⏱ <h3>Pomodoro</h3>
+        <p>Focus study sessions</p>
+      </div>
+
+      <div class="card" onclick="openClubs()">
+        💬 <h3>Clubs</h3>
+        <p>Debate & study groups</p>
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+</html>
