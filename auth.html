@@ -1,276 +1,499 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-  <meta http-equiv="Pragma" content="no-cache">
-  <meta http-equiv="Expires" content="0">
-
-  <title>Study Africa - Authentication</title>
-
-  <link rel="stylesheet" href="assets/styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Africa - Login or Sign Up</title>
 
   <style>
-    body{
-      margin:0;
-      padding:20px;
-      font-family:Arial,sans-serif;
-      background:#0f172a;
-      color:white;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      min-height:100vh;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
     }
 
-    .auth-container{
-      width:100%;
-      max-width:650px;
-      background:#1e293b;
-      padding:30px;
-      border-radius:18px;
-      box-shadow:0 0 25px rgba(0,0,0,0.3);
+    body {
+      background: linear-gradient(135deg, #0b2b26, #144e3a);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
     }
 
-    h1{
-      margin-bottom:10px;
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      background: white;
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
     }
 
-    p{
-      color:#cbd5e1;
+    h1 {
+      text-align: center;
+      color: #1e4b3c;
+      margin-bottom: 0.5rem;
     }
 
-    form{
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      margin-top:20px;
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
     }
 
-    input,
-    select,
-    button{
-      padding:14px;
-      border:none;
-      border-radius:10px;
-      font-size:15px;
-      width:100%;
-      box-sizing:border-box;
+    .mode-switch {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #e5e7eb;
     }
 
-    input,
-    select{
-      background:white;
-      color:black;
+    .mode-btn {
+      flex: 1;
+      padding: 0.75rem;
+      background: none;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #6b7280;
+      transition: all 0.2s;
     }
 
-    button{
-      background:#2563eb;
-      color:white;
-      cursor:pointer;
-      font-weight:bold;
+    .mode-btn.active {
+      color: #d48f2b;
+      border-bottom: 2px solid #d48f2b;
+      margin-bottom: -2px;
     }
 
-    button:hover{
-      background:#1d4ed8;
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
     }
 
-    #signupFields{
-      display:none;
-      flex-direction:column;
-      gap:14px;
+    .full {
+      grid-column: 1 / -1;
     }
 
-    fieldset{
-      border:1px solid #475569;
-      border-radius:12px;
-      padding:15px;
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #333;
+      margin-bottom: 0.3rem;
+      display: block;
     }
 
-    legend{
-      padding:0 10px;
-      color:#93c5fd;
+    input, select {
+      width: 100%;
+      padding: 0.7rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      outline: none;
     }
 
-    fieldset label{
-      display:block;
-      margin-bottom:10px;
-      color:#e2e8f0;
+    input:focus, select:focus {
+      border-color: #d48f2b;
     }
 
-    .bottom-text{
-      margin-top:20px;
-      text-align:center;
+    .section {
+      background: #f7faf9;
+      padding: 1rem;
+      border-radius: 1rem;
+      margin-top: 1rem;
     }
 
-    .link-btn{
-      color:#60a5fa;
-      cursor:pointer;
-      text-decoration:underline;
+    .section h3 {
+      margin-bottom: 0.8rem;
+      color: #1e4b3c;
     }
 
-    #status{
-      margin-top:15px;
-      text-align:center;
-      color:#fca5a5;
+    .subjects {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
     }
 
-    .hidden{
-      display:none;
+    .subjects label {
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .curriculum-box {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      border-radius: 1rem;
+      margin-top: 1rem;
+    }
+
+    .curriculum-title {
+      font-weight: bold;
+      color: #d48f2b;
+      margin-bottom: 0.5rem;
+    }
+
+    .tag {
+      display: inline-block;
+      background: #e8f5f0;
+      color: #1e4b3c;
+      padding: 0.2rem 0.6rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 0.7rem;
+      background: #d48f2b;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn:hover {
+      background: #b87a22;
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .note {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    .error {
+      color: #dc2626;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    .success {
+      color: #10b981;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .teacher-fields {
+      border: 2px solid #d48f2b;
+      background: #fffaf0;
+    }
+
+    .required::after {
+      content: " *";
+      color: #dc2626;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .remember-me label {
+      margin-bottom: 0;
+      font-weight: normal;
+    }
+
+    .forgot-link {
+      text-align: right;
+      margin-top: 0.5rem;
+    }
+
+    .forgot-link a {
+      color: #d48f2b;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+
+    .forgot-link a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 
 <body>
 
-<div class="auth-container">
+<div class="container">
+  <h1 id="pageTitle">🎓 Welcome Back</h1>
+  <div class="subtitle" id="pageSubtitle">Login to continue your learning journey</div>
 
-  <h1 id="authTitle">Welcome Back</h1>
-
-  <p>
-    Inclusive learning for every student and teacher.
-  </p>
-
-  <form id="authForm">
-
-    <!-- SIGNUP FIELDS -->
-    <div id="signupFields">
-
-      <!-- Full Name -->
-      <input
-        type="text"
-        id="fullName"
-        placeholder="Full Name"
-      >
-
-      <!-- Role -->
-      <select id="roleSelect">
-        <option value="student">Student</option>
-        <option value="teacher">Teacher</option>
-      </select>
-
-      <!-- Religion -->
-      <select id="religionSelect">
-        <option value="">Select Religion</option>
-        <option value="christianity">Christianity</option>
-        <option value="islam">Islam</option>
-        <option value="traditional">Traditional African</option>
-        <option value="other">Other</option>
-        <option value="none">Prefer not to say</option>
-      </select>
-
-      <!-- Disability -->
-      <select id="disabilitySelect">
-        <option value="">Disability Support (Optional)</option>
-        <option value="none">None</option>
-        <option value="visual">Visual Impairment</option>
-        <option value="hearing">Hearing Impairment</option>
-        <option value="dyslexia">Dyslexia</option>
-        <option value="mobility">Mobility Challenges</option>
-        <option value="other">Other</option>
-      </select>
-
-      <!-- Grade -->
-      <select id="gradeSelect">
-        <option value="">Select Grade</option>
-        <option value="grade7">Grade 7</option>
-        <option value="grade8">Grade 8</option>
-        <option value="grade9">Grade 9</option>
-        <option value="grade10">Grade 10</option>
-        <option value="grade11">Grade 11</option>
-        <option value="grade12">Grade 12</option>
-      </select>
-
-      <!-- Curriculum -->
-      <select id="curriculumSelect">
-        <option value="">Select Curriculum</option>
-        <option value="cbc">CBC (Kenya)</option>
-        <option value="844">8-4-4 (Kenya)</option>
-        <option value="igcse">IGCSE</option>
-        <option value="ib">International Baccalaureate</option>
-        <option value="waec">WAEC (West Africa)</option>
-        <option value="south-african">South African CAPS</option>
-      </select>
-
-      <!-- Clubs -->
-      <fieldset>
-
-        <legend>Select Clubs to Join</legend>
-
-        <label>
-          <input type="checkbox" name="clubs" value="debate">
-          Debate Club
-        </label>
-
-        <label>
-          <input type="checkbox" name="clubs" value="coding">
-          Coding Club
-        </label>
-
-        <label>
-          <input type="checkbox" name="clubs" value="science">
-          Science Club
-        </label>
-
-        <label>
-          <input type="checkbox" name="clubs" value="arts">
-          Arts & Drama
-        </label>
-
-        <label>
-          <input type="checkbox" name="clubs" value="sports">
-          Sports Club
-        </label>
-
-        <label>
-          <input type="checkbox" name="clubs" value="music">
-          Music Club
-        </label>
-
-      </fieldset>
-
-    </div>
-
-    <!-- LOGIN FIELDS -->
-    <input
-      type="email"
-      id="email"
-      placeholder="Email"
-      required
-    >
-
-    <input
-      type="password"
-      id="password"
-      placeholder="Password"
-      required
-    >
-
-    <button type="submit" id="submitBtn">
-      Login
-    </button>
-
-  </form>
-
-  <p id="status"></p>
-
-  <div class="bottom-text">
-
-    <span id="switchText">
-      Don't have an account?
-    </span>
-
-    <span class="link-btn" id="switchMode">
-      Sign Up
-    </span>
-
+  <!-- Mode Switch Buttons -->
+  <div class="mode-switch">
+    <button class="mode-btn active" id="loginModeBtn">🔐 Login</button>
+    <button class="mode-btn" id="signupModeBtn">📝 Sign Up</button>
   </div>
 
+  <form id="authForm">
+    <!-- ========================= LOGIN FIELDS ========================= -->
+    <div id="loginFields">
+      <div class="grid">
+        <div class="full">
+          <label class="required">Email</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com">
+        </div>
+        <div class="full">
+          <label class="required">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••">
+        </div>
+      </div>
+      <div class="remember-me">
+        <input type="checkbox" id="rememberMe">
+        <label>Remember Me</label>
+      </div>
+      <div class="forgot-link">
+        <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+      </div>
+    </div>
+
+    <!-- ========================= SIGNUP FIELDS ========================= -->
+    <div id="signupFields" class="hidden">
+      <div class="grid">
+        <div>
+          <label class="required">Email</label>
+          <input type="email" id="signupEmail" placeholder="you@example.com">
+        </div>
+        <div>
+          <label class="required">Password</label>
+          <input type="password" id="signupPassword" placeholder="••••••••">
+        </div>
+        <div class="full">
+          <label class="required">Full Name</label>
+          <input type="text" id="fullName" placeholder="Your full name">
+        </div>
+        <div>
+          <label class="required">Religion</label>
+          <select id="religion">
+            <option value="">Select Religion</option>
+            <option value="christianity">Christianity</option>
+            <option value="islam">Islam</option>
+            <option value="traditional">Traditional African</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="required">Role</label>
+          <select id="role">
+            <option value="student">Student</option>
+            <option value="teacher">Teacher</option>
+          </select>
+        </div>
+        <div>
+          <label class="required">Curriculum</label>
+          <select id="curriculum">
+            <option value="cbc">CBC (Kenya)</option>
+            <option value="8-4-4">8-4-4 (Kenya)</option>
+            <option value="igcse">IGCSE</option>
+            <option value="ib">IB</option>
+          </select>
+        </div>
+        <div>
+          <label class="required">Grade / Level</label>
+          <select id="grade">
+            <option value="grade7">Grade 7</option>
+            <option value="grade8">Grade 8</option>
+            <option value="grade9">Grade 9</option>
+            <option value="grade10">Grade 10 (Form 2)</option>
+            <option value="grade11">Grade 11 (Form 3)</option>
+            <option value="grade12">Grade 12 (Form 4)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- TEACHER FIELDS -->
+      <div id="teacherFields" class="hidden">
+        <div class="section teacher-fields">
+          <h3>👨‍🏫 Teacher Information</h3>
+          <div class="grid">
+            <div>
+              <label class="required">TSC Number</label>
+              <input type="text" id="tscNumber" placeholder="TSC-123456">
+            </div>
+            <div>
+              <label class="required">School Name</label>
+              <input type="text" id="schoolName" placeholder="Your school name">
+            </div>
+          </div>
+          <div>
+            <label class="required">Subjects You Teach</label>
+            <div class="subjects" id="teacherSubjects">
+              <label><input type="checkbox" value="mathematics"> Mathematics</label>
+              <label><input type="checkbox" value="english"> English</label>
+              <label><input type="checkbox" value="kiswahili"> Kiswahili</label>
+              <label><input type="checkbox" value="biology"> Biology</label>
+              <label><input type="checkbox" value="chemistry"> Chemistry</label>
+              <label><input type="checkbox" value="physics"> Physics</label>
+              <label><input type="checkbox" value="history"> History</label>
+              <label><input type="checkbox" value="geography"> Geography</label>
+              <label><input type="checkbox" value="computer"> Computer Science</label>
+              <label><input type="checkbox" value="business"> Business Studies</label>
+            </div>
+          </div>
+          <div>
+            <label class="required">Grades You Teach</label>
+            <div class="subjects" id="teacherGrades">
+              <label><input type="checkbox" value="grade7"> Grade 7</label>
+              <label><input type="checkbox" value="grade8"> Grade 8</label>
+              <label><input type="checkbox" value="grade9"> Grade 9</label>
+              <label><input type="checkbox" value="grade10"> Grade 10</label>
+              <label><input type="checkbox" value="grade11"> Grade 11</label>
+              <label><input type="checkbox" value="grade12"> Grade 12</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CBC STRUCTURE -->
+      <div id="cbcSubjects" class="curriculum-box">
+        <div class="curriculum-title">📘 CBC Pathway</div>
+        <div class="tag">Competency Based Curriculum</div>
+        <div class="section">
+          <h3>Core Subjects</h3>
+          <div class="subjects">
+            <label><input type="checkbox" value="english"> English</label>
+            <label><input type="checkbox" value="kiswahili"> Kiswahili</label>
+            <label><input type="checkbox" value="mathematics"> Mathematics</label>
+            <label><input type="checkbox" value="integrated_science"> Integrated Science</label>
+            <label><input type="checkbox" value="social_studies"> Social Studies</label>
+          </div>
+        </div>
+        <div class="section">
+          <h3>Optional Pathways</h3>
+          <div class="subjects">
+            <label><input type="checkbox" value="stem"> STEM Path</label>
+            <label><input type="checkbox" value="arts_sports"> Arts & Sports</label>
+            <label><input type="checkbox" value="business"> Business Path</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8-4-4 STRUCTURE -->
+      <div id="eightFourFourSubjects" class="curriculum-box hidden">
+        <div class="curriculum-title">📗 8-4-4 Pathway</div>
+        <div class="tag">Exam-Oriented System</div>
+        <div class="section">
+          <h3>Core Subjects</h3>
+          <div class="subjects">
+            <label><input type="checkbox" value="mathematics"> Mathematics</label>
+            <label><input type="checkbox" value="english"> English</label>
+            <label><input type="checkbox" value="kiswahili"> Kiswahili</label>
+            <label><input type="checkbox" value="biology"> Biology</label>
+            <label><input type="checkbox" value="chemistry"> Chemistry</label>
+            <label><input type="checkbox" value="physics"> Physics</label>
+            <label><input type="checkbox" value="history"> History</label>
+            <label><input type="checkbox" value="geography"> Geography</label>
+            <label><input type="checkbox" value="cre"> CRE</label>
+            <label><input type="checkbox" value="business"> Business Studies</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- IGCSE -->
+      <div id="igcseSubjects" class="curriculum-box hidden">
+        <div class="curriculum-title">📙 IGCSE Pathway</div>
+        <div class="tag">International Curriculum</div>
+        <div class="section">
+          <h3>Core + Electives</h3>
+          <div class="subjects">
+            <label><input type="checkbox" value="mathematics"> Mathematics</label>
+            <label><input type="checkbox" value="english"> English</label>
+            <label><input type="checkbox" value="physics"> Physics</label>
+            <label><input type="checkbox" value="chemistry"> Chemistry</label>
+            <label><input type="checkbox" value="biology"> Biology</label>
+            <label><input type="checkbox" value="economics"> Economics</label>
+            <label><input type="checkbox" value="computer_science"> Computer Science</label>
+            <label><input type="checkbox" value="business_studies"> Business Studies</label>
+            <label><input type="checkbox" value="accounting"> Accounting</label>
+            <label><input type="checkbox" value="sociology"> Sociology</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- IB -->
+      <div id="ibSubjects" class="curriculum-box hidden">
+        <div class="curriculum-title">📕 IB Pathway</div>
+        <div class="tag">Group-Based Learning</div>
+        <div class="section">
+          <h3>Subject Groups</h3>
+          <div class="subjects">
+            <label><input type="checkbox" value="language_literature"> Language & Literature</label>
+            <label><input type="checkbox" value="language_acquisition"> Language Acquisition</label>
+            <label><input type="checkbox" value="sciences"> Sciences</label>
+            <label><input type="checkbox" value="mathematics"> Mathematics</label>
+            <label><input type="checkbox" value="arts"> Arts</label>
+            <label><input type="checkbox" value="individuals_societies"> Individuals & Societies</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISABILITY SECTION -->
+      <div class="section">
+        <h3>♿ Accessibility & Disability Support</h3>
+        <div>
+          <label>Do you have any disability we should accommodate?</label>
+          <select id="disability">
+            <option value="none">No disability</option>
+            <option value="visual_impairment">Visual Impairment</option>
+            <option value="hearing_impairment">Hearing Impairment</option>
+            <option value="physical_disability">Physical Disability</option>
+            <option value="learning_disability">Learning Disability</option>
+            <option value="adhd">ADHD</option>
+            <option value="speech_impairment">Speech Impairment</option>
+          </select>
+        </div>
+        <div id="accommodationInfo" class="hidden" style="margin-top: 0.8rem; padding: 0.8rem; background: #e0f2fe; border-radius: 0.5rem;">
+          <small>♿ We will provide specialized accommodations for you!</small>
+        </div>
+      </div>
+
+      <!-- CLUBS -->
+      <div class="section">
+        <h3>🎯 Clubs to Join</h3>
+        <div class="subjects" id="clubs">
+          <label><input type="checkbox" value="coding"> Coding Club</label>
+          <label><input type="checkbox" value="debate"> Debate Club</label>
+          <label><input type="checkbox" value="science"> Science Club</label>
+          <label><input type="checkbox" value="arts"> Arts Club</label>
+          <label><input type="checkbox" value="sports"> Sports Club</label>
+          <label><input type="checkbox" value="music"> Music Club</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><input type="checkbox" id="termsRequired"> I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+      </div>
+    </div>
+
+    <button type="submit" class="btn" id="submitBtn">🔐 Login</button>
+  </form>
+
+  <div id="message" class="note"></div>
+  <p class="note" id="trialNote">
+    ⭐ 30-day free trial starts immediately after registration!
+  </p>
 </div>
 
-<script type="module" src="./supabase.js"></script>
-<script type="module" src="./auth.js"></script>
-
+<script type="module" src="auth.js"></script>
 </body>
 </html>
