@@ -2,25 +2,178 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Dashboard</title>
-  <link rel="stylesheet" href="assets/styles.css">
-</head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard - Study Africa</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
+    body {
+      font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0b2b26 0%, #144e3a 100%);
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .dashboard {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      background: white;
+      border-radius: 1rem;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .topbar h2 {
+      color: #1e4b3c;
+    }
+
+    .btn {
+      padding: 0.5rem 1.5rem;
+      border: none;
+      border-radius: 2rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .btn.primary {
+      background: #d48f2b;
+      color: white;
+    }
+
+    .btn.primary:hover {
+      background: #b87a22;
+      transform: scale(0.98);
+    }
+
+    .btn.secondary {
+      background: #dc2626;
+      color: white;
+    }
+
+    .btn.secondary:hover {
+      background: #b91c1c;
+    }
+
+    .card {
+      background: white;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .grid .card {
+      cursor: pointer;
+      text-align: center;
+      margin-bottom: 0;
+    }
+
+    .grid .card:hover {
+      background: #fef9e6;
+    }
+
+    .grid .card h3 {
+      margin: 0.5rem 0;
+      color: #1e4b3c;
+    }
+
+    .premium-badge {
+      background: linear-gradient(135deg, #ffd700, #ffb347);
+      color: #1e4b3c;
+      padding: 0.25rem 0.75rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: bold;
+      display: inline-block;
+      margin-left: 0.5rem;
+    }
+
+    .status-free {
+      color: #6b7280;
+    }
+
+    .status-premium {
+      color: #d48f2b;
+      font-weight: bold;
+    }
+
+    .welcome-section {
+      background: linear-gradient(135deg, #1e4b3c, #2a6b55);
+      color: white;
+    }
+
+    .welcome-section h3 {
+      color: white;
+    }
+
+    .profile-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .topbar {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+      
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
 <body>
 
   <div class="dashboard">
 
     <div class="topbar">
       <h2>📘 Student Dashboard</h2>
-      <button class="btn secondary" onclick="logout()">Logout</button>
+      <button class="btn secondary" onclick="handleLogout()">🚪 Logout</button>
+    </div>
+
+    <div class="card welcome-section">
+      <h3>👋 Welcome back, <span id="studentName">Student</span>!</h3>
+      <div class="profile-info">
+        <p>📚 Keep learning and growing!</p>
+        <p>⭐ Daily streak: <span id="streak">0</span> days</p>
+      </div>
     </div>
 
     <div class="card">
-      <h3>Premium Status</h3>
+      <h3>✨ Premium Status <span id="premiumBadge"></span></h3>
       <p id="premiumStatus">Loading...</p>
-
-      <button class="btn primary" onclick="upgradeToPremium()">
-        Upgrade to Premium (200 KES)
+      <button class="btn primary" id="upgradeBtn" onclick="upgradeToPremium()">
+        💎 Upgrade to Premium (200 KES/month)
       </button>
     </div>
 
@@ -28,22 +181,147 @@
 
       <div class="card" onclick="openGames()">
         🎮 <h3>Games Hub</h3>
-        <p>Flashcards, quizzes, learning games</p>
+        <p>Flashcards, quizzes & learning games</p>
+        <small>🎯 Make learning fun!</small>
       </div>
 
       <div class="card" onclick="openPomodoro()">
-        ⏱ <h3>Pomodoro</h3>
-        <p>Focus study sessions</p>
+        ⏱️ <h3>Pomodoro Timer</h3>
+        <p>Focus study sessions (25/5 min)</p>
+        <small>🍅 Boost productivity</small>
       </div>
 
       <div class="card" onclick="openClubs()">
         💬 <h3>Clubs</h3>
-        <p>Debate & study groups</p>
+        <p>Debate, coding & study groups</p>
+        <small>👥 Join the conversation</small>
+      </div>
+
+      <div class="card" onclick="openResources()">
+        📖 <h3>Learning Resources</h3>
+        <p>Notes, videos & past papers</p>
+        <small>📚 Ace your exams</small>
+      </div>
+
+      <div class="card" onclick="openAI()">
+        🤖 <h3>AI Study Assistant</h3>
+        <p>Get help with homework</p>
+        <small>✨ Ask anything!</small>
+      </div>
+
+      <div class="card" onclick="openLeaderboard()">
+        🏆 <h3>Leaderboard</h3>
+        <p>Compete with classmates</p>
+        <small>⭐ Climb the ranks</small>
       </div>
 
     </div>
 
   </div>
+
+  <script type="module">
+    import { supabase } from "./supabase.js";
+
+    // Check if user is logged in
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        window.location.href = "auth.html";
+        return null;
+      }
+      
+      return session;
+    }
+
+    // Load user profile
+    async function loadUserProfile() {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || "Student";
+        document.getElementById("studentName").innerText = name;
+        
+        // Load profile from database
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+        
+        if (profile) {
+          // Update premium status
+          const isPremium = profile.is_premium || false;
+          const premiumStatusEl = document.getElementById("premiumStatus");
+          const premiumBadge = document.getElementById("premiumBadge");
+          
+          if (isPremium) {
+            premiumStatusEl.innerHTML = "✅ <strong class='status-premium'>Active Premium Member</strong> - Unlimited access to all resources!";
+            premiumStatusEl.className = "status-premium";
+            if (premiumBadge) premiumBadge.innerHTML = "<span class='premium-badge'>⭐ PREMIUM</span>";
+            const upgradeBtn = document.getElementById("upgradeBtn");
+            if (upgradeBtn) upgradeBtn.innerText = "🎉 Premium Active";
+          } else {
+            premiumStatusEl.innerHTML = "⚠️ <strong class='status-free'>Free Account</strong> - Upgrade to unlock premium content!";
+            if (premiumBadge) premiumBadge.innerHTML = "";
+          }
+          
+          // Update streak
+          const streak = profile.streak || 0;
+          document.getElementById("streak").innerText = streak;
+        }
+      }
+    }
+
+    // Logout function
+    window.handleLogout = async function() {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        alert("Error logging out: " + error.message);
+      } else {
+        window.location.href = "auth.html";
+      }
+    };
+
+    // Navigation functions
+    window.openGames = function() {
+      alert("🎮 Games Hub coming soon! Play flashcards and quizzes.");
+    };
+    
+    window.openPomodoro = function() {
+      alert("⏱️ Pomodoro Timer coming soon! Stay focused.");
+    };
+    
+    window.openClubs = function() {
+      alert("💬 Clubs feature coming soon! Join study groups.");
+    };
+    
+    window.openResources = function() {
+      alert("📚 Learning Resources coming soon!");
+    };
+    
+    window.openAI = function() {
+      alert("🤖 AI Study Assistant coming soon!");
+    };
+    
+    window.openLeaderboard = function() {
+      alert("🏆 Leaderboard coming soon!");
+    };
+    
+    window.upgradeToPremium = function() {
+      alert("💎 Premium upgrade coming soon! Stay tuned.");
+    };
+
+    // Initialize dashboard
+    async function init() {
+      const session = await checkAuth();
+      if (session) {
+        await loadUserProfile();
+      }
+    }
+    
+    init();
+  </script>
 
 </body>
 </html>
