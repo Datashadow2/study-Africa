@@ -159,9 +159,11 @@ function checkEmailConfirmation(email) {
 // AUTO-LOGIN AFTER CONFIRMATION
 // =========================
 async function checkForAutoLogin() {
-  const { data: { session } } = await supabase.auth.getSession();
+  // ONLY run if there's a hash in the URL (email confirmation redirect)
+  if (!window.location.hash || !window.location.hash.includes("access_token")) {
+    return false;
+  }
   
-  // Check URL for confirmation redirect (Supabase adds #access_token)
   const hashParams = new URLSearchParams(window.location.hash.substring(1));
   const accessToken = hashParams.get("access_token");
   const refreshToken = hashParams.get("refresh_token");
@@ -198,7 +200,6 @@ async function checkForAutoLogin() {
   }
   return false;
 }
-
 // =========================
 // CURRICULUM VISIBILITY
 // =========================
