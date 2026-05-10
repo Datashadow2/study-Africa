@@ -4,6 +4,7 @@ import { supabase } from "./supabase.js";
 // STATE
 // =========================
 let currentMode = "login";
+let confirmationPollingInterval = null;
 
 // =========================
 // DOM ELEMENTS
@@ -51,13 +52,13 @@ const accommodationInfo = document.getElementById("accommodationInfo");
 // =========================
 // HELPER FUNCTIONS
 // =========================
-function showMessage(msg, isError = true) {
-  messageDiv.textContent = msg;
+function showMessage(msg, isError = true, isHtml = false) {
+  messageDiv.innerHTML = isHtml ? msg : msg;
   messageDiv.className = isError ? "error" : "success";
   setTimeout(() => {
-    messageDiv.textContent = "";
+    messageDiv.innerHTML = "";
     messageDiv.className = "note";
-  }, 5000);
+  }, 8000);
 }
 
 function setLoading(isLoading) {
@@ -76,6 +77,126 @@ function getSelectedCheckboxValues(containerId) {
 
 function getClubs() {
   return getSelectedCheckboxValues("clubs");
+}
+
+// =========================
+// EMAIL CONFIRMATION HANDLER
+// =========================
+function checkEmailConfirmation(email) {
+  // Show confirmation message with instructions
+  const confirmHtml = `
+    <div style="background: #e0f2fe; padding: 1rem; border-radius: 0.5rem; margin-top: 1rem;">
+      <strong>✅ Account created! Please verify your email.</strong><br>
+      We sent a confirmation link to <strong>${email}</strong>.<br><br>
+      <span id="resendTimer">⏳ You can request a new link in <span id="countdown">60</span> seconds</span><br>
+      <button id="resendBtn" style="margin-top: 0.5rem; padding: 0.3rem 1rem; background: #d48f2b; color: white; border: none; border-radius: 0.3rem; cursor: pointer;" disabled>Resend Confirmation Email</button>
+    </div>
+  `;
+  
+  showMessage(confirmHtml, false, true);
+  
+  // Start countdown for resend button
+  let seconds = 60;
+  const countdownEl = document.getElementById("countdown");
+  const resendBtn = document.getElementById("resendBtn");
+  
+  const timer = setInterval(() => {
+    seconds--;
+    if (countdownEl) countdownEl.innerText = seconds;
+    if (seconds <= 0) {
+      clearInterval(timer);
+      if (resendBtn) {
+        resendBtn.disabled = false;
+        resendBtn.innerText = "Resend Confirmation Email";
+      }
+    }
+  }, 1000);
+  
+  // Resend button handler
+  document.getElementById("resendBtn")?.addEventListener("click", async () => {
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: email,
+    });
+    
+    if (error) {
+      showMessage("Error resending: " + error.message);
+    } else {
+      showMessage("✅ New confirmation email sent! Check your inbox.", false);
+      // Reset countdown
+      seconds = 60;
+      if (resendBtn) resendBtn.disabled = true;
+      if (countdownEl) countdownEl.innerText = seconds;
+      const newTimer = setInterval(() => {
+        seconds--;
+        if (countdownEl) countdownEl.innerText = seconds;
+        if (seconds <= 0) {
+          clearInterval(newTimer);
+          if (resendBtn) resendBtn.disabled = false;
+        }
+      }, 1000);
+    }
+  });
+  
+  // Start polling to check if email is confirmed
+  if (confirmationPollingInterval) clearInterval(confirmationPollingInterval);
+  
+  confirmationPollingInterval = setInterval(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user?.confirmed_at) {
+      clearInterval(confirmationPollingInterval);
+      showMessage("🎉 Email confirmed! You can now login.", false);
+      // Auto switch to login mode after 2 seconds
+      setTimeout(() => {
+        toggleMode("login");
+        loginEmail.value = email;
+      }, 2000);
+    }
+  }, 3000); // Check every 3 seconds
+}
+
+// =========================
+// AUTO-LOGIN AFTER CONFIRMATION
+// =========================
+async function checkForAutoLogin() {
+  const { data: { session } } = await supabase.auth.getSession();
+  
+  // Check URL for confirmation redirect (Supabase adds #access_token)
+  const hashParams = new URLSearchParams(window.location.hash.substring(1));
+  const accessToken = hashParams.get("access_token");
+  const refreshToken = hashParams.get("refresh_token");
+  
+  if (accessToken && refreshToken) {
+    // Set the session from URL tokens
+    const { error } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    });
+    
+    if (!error) {
+      // Clear URL hash
+      window.history.replaceState({}, document.title, window.location.pathname);
+      showMessage("Email confirmed! Redirecting to dashboard...", false);
+      
+      // Get user role and redirect
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+      
+      setTimeout(() => {
+        if (profile?.role === "teacher") {
+          window.location.href = "teacher-dashboard.html";
+        } else {
+          window.location.href = "student-dashboard.html";
+        }
+      }, 1500);
+      return true;
+    }
+  }
+  return false;
 }
 
 // =========================
@@ -151,24 +272,17 @@ function toggleMode(mode) {
   currentMode = mode;
   
   if (mode === "login") {
-    // Show login fields, hide signup fields
     loginFields.classList.remove("hidden");
     signupFields.classList.add("hidden");
-    
-    // Update UI
     loginModeBtn.classList.add("active");
     signupModeBtn.classList.remove("active");
     pageTitle.innerText = "🎓 Welcome Back";
     pageSubtitle.innerText = "Login to continue your learning journey";
     submitBtn.innerText = "🔐 Login";
     trialNote.classList.add("hidden");
-    
   } else {
-    // Show signup fields, hide login fields
     loginFields.classList.add("hidden");
     signupFields.classList.remove("hidden");
-    
-    // Update UI
     signupModeBtn.classList.add("active");
     loginModeBtn.classList.remove("active");
     pageTitle.innerText = "📝 Create Account";
@@ -200,7 +314,12 @@ async function handleLogin(e) {
   });
   
   if (error) {
-    showMessage(error.message);
+    if (error.message.includes("Email not confirmed")) {
+      showMessage("⚠️ Please verify your email first. Check your inbox and click the confirmation link.", true);
+      checkEmailConfirmation(email);
+    } else {
+      showMessage(error.message);
+    }
     setLoading(false);
     return;
   }
@@ -331,29 +450,30 @@ async function handleSignup(e) {
   }
   
   if (data.user) {
-    // Create profile
-    await supabase.from("profiles").insert({
-      id: data.user.id,
-      full_name: fullName,
-      email: email,
-      role: role,
-      religion: religion,
-      curriculum: curriculum,
-      grade: grade,
-      clubs: clubs,
-      subjects: subjects,
-      disability: disability !== "none" ? disability : null,
-      onboarded: false,
-      is_premium: false,
-      trial_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    });
+    // Update profile with additional data (created by trigger)
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({
+        religion: religion,
+        curriculum: curriculum,
+        grade: grade,
+        clubs: clubs,
+        subjects: subjects,
+        disability: disability !== "none" ? disability : null,
+        full_name: fullName,
+      })
+      .eq("id", data.user.id);
+    
+    if (updateError) {
+      console.error("Profile update error:", updateError);
+    }
     
     // Store teacher data if applicable
     if (role === "teacher") {
       const teacherSubjects = getSelectedCheckboxValues("teacherSubjects");
       const teacherGrades = getSelectedCheckboxValues("teacherGrades");
       
-      await supabase.from("teacher_profiles").insert({
+      await supabase.from("teacher_profiles").upsert({
         user_id: data.user.id,
         tsc_number: tscNumberInput?.value.trim(),
         school_name: schoolNameInput?.value.trim(),
@@ -364,6 +484,9 @@ async function handleSignup(e) {
     
     // Store student subjects
     if (role === "student" && subjects.length > 0) {
+      // Delete existing first to avoid duplicates
+      await supabase.from("student_subjects").delete().eq("user_id", data.user.id);
+      
       for (const subject of subjects) {
         await supabase.from("student_subjects").insert({
           user_id: data.user.id,
@@ -373,13 +496,8 @@ async function handleSignup(e) {
       }
     }
     
-    showMessage("Account created successfully! Check your email to verify, then login.", false);
-    
-    // Switch to login mode after 3 seconds
-    setTimeout(() => {
-      toggleMode("login");
-      loginEmail.value = email;
-    }, 3000);
+    // Show email confirmation message
+    checkEmailConfirmation(email);
   }
   
   setLoading(false);
@@ -404,7 +522,7 @@ async function handleForgotPassword(e) {
   if (error) {
     showMessage(error.message);
   } else {
-    showMessage("Password reset link sent to your email!", false);
+    showMessage("📧 Password reset link sent to your email! Check your inbox.", false);
   }
 }
 
@@ -431,12 +549,30 @@ disabilitySelect?.addEventListener("change", updateAccommodationInfo);
 // =========================
 // INITIALIZE
 // =========================
+// Check for email confirmation redirect first
+checkForAutoLogin();
+
 // Check for remembered email
 const savedEmail = localStorage.getItem("rememberedEmail");
 if (savedEmail && loginEmail) {
   loginEmail.value = savedEmail;
   rememberMe.checked = true;
 }
+
+// Check if user is already logged in
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session?.user) {
+    // Redirect to dashboard
+    supabase.from("profiles").select("role").eq("id", session.user.id).single()
+      .then(({ data: profile }) => {
+        if (profile?.role === "teacher") {
+          window.location.href = "teacher-dashboard.html";
+        } else {
+          window.location.href = "student-dashboard.html";
+        }
+      });
+  }
+});
 
 // Initialize signup field visibility
 updateCurriculumVisibility();
