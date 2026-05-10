@@ -3,29 +3,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
   <title>Study Africa - Authentication</title>
 
-  <link rel="stylesheet" href="assets/styles.css" />
+  <link rel="stylesheet" href="assets/styles.css">
 
   <style>
     body{
       margin:0;
-      font-family:Arial, sans-serif;
+      padding:20px;
+      font-family:Arial,sans-serif;
       background:#0f172a;
       color:white;
       display:flex;
       justify-content:center;
       align-items:center;
       min-height:100vh;
-      padding:20px;
     }
 
     .auth-container{
       width:100%;
-      max-width:500px;
+      max-width:650px;
       background:#1e293b;
       padding:30px;
-      border-radius:16px;
+      border-radius:18px;
       box-shadow:0 0 25px rgba(0,0,0,0.3);
     }
 
@@ -44,30 +45,59 @@
       margin-top:20px;
     }
 
-    input, select{
-      padding:14px;
-      border:none;
-      border-radius:10px;
-      font-size:15px;
-    }
-
+    input,
+    select,
     button{
       padding:14px;
       border:none;
       border-radius:10px;
+      font-size:15px;
+      width:100%;
+      box-sizing:border-box;
+    }
+
+    input,
+    select{
+      background:white;
+      color:black;
+    }
+
+    button{
       background:#2563eb;
       color:white;
-      font-size:16px;
       cursor:pointer;
-      margin-top:10px;
+      font-weight:bold;
     }
 
     button:hover{
       background:#1d4ed8;
     }
 
+    #signupFields{
+      display:none;
+      flex-direction:column;
+      gap:14px;
+    }
+
+    fieldset{
+      border:1px solid #475569;
+      border-radius:12px;
+      padding:15px;
+    }
+
+    legend{
+      padding:0 10px;
+      color:#93c5fd;
+    }
+
+    fieldset label{
+      display:block;
+      margin-bottom:10px;
+      color:#e2e8f0;
+    }
+
     .bottom-text{
-      margin-top:18px;
+      margin-top:20px;
       text-align:center;
     }
 
@@ -78,7 +108,7 @@
     }
 
     #status{
-      margin-top:10px;
+      margin-top:15px;
       text-align:center;
       color:#fca5a5;
     }
@@ -94,57 +124,125 @@
 <div class="auth-container">
 
   <h1 id="authTitle">Welcome Back</h1>
-  <p>Inclusive learning for every student and teacher.</p>
+
+  <p>
+    Inclusive learning for every student and teacher.
+  </p>
 
   <form id="authForm">
 
-    <div id="signupFields" class="hidden">
+    <!-- SIGNUP FIELDS -->
+    <div id="signupFields">
 
+      <!-- Full Name -->
       <input
         type="text"
         id="fullName"
         placeholder="Full Name"
-      />
+      >
 
+      <!-- Role -->
       <select id="roleSelect">
         <option value="student">Student</option>
         <option value="teacher">Teacher</option>
       </select>
 
-      <select id="religion">
-        <option value="">Religion (Optional)</option>
-        <option>Christianity</option>
-        <option>Islam</option>
-        <option>Hinduism</option>
-        <option>Buddhism</option>
-        <option>Other</option>
+      <!-- Religion -->
+      <select id="religionSelect">
+        <option value="">Select Religion</option>
+        <option value="christianity">Christianity</option>
+        <option value="islam">Islam</option>
+        <option value="traditional">Traditional African</option>
+        <option value="other">Other</option>
+        <option value="none">Prefer not to say</option>
       </select>
 
-      <select id="disability">
+      <!-- Disability -->
+      <select id="disabilitySelect">
         <option value="">Disability Support (Optional)</option>
-        <option>None</option>
-        <option>Visual Impairment</option>
-        <option>Hearing Impairment</option>
-        <option>Dyslexia</option>
-        <option>Mobility Challenges</option>
-        <option>Other</option>
+        <option value="none">None</option>
+        <option value="visual">Visual Impairment</option>
+        <option value="hearing">Hearing Impairment</option>
+        <option value="dyslexia">Dyslexia</option>
+        <option value="mobility">Mobility Challenges</option>
+        <option value="other">Other</option>
       </select>
+
+      <!-- Grade -->
+      <select id="gradeSelect">
+        <option value="">Select Grade</option>
+        <option value="grade7">Grade 7</option>
+        <option value="grade8">Grade 8</option>
+        <option value="grade9">Grade 9</option>
+        <option value="grade10">Grade 10</option>
+        <option value="grade11">Grade 11</option>
+        <option value="grade12">Grade 12</option>
+      </select>
+
+      <!-- Curriculum -->
+      <select id="curriculumSelect">
+        <option value="">Select Curriculum</option>
+        <option value="cbc">CBC (Kenya)</option>
+        <option value="844">8-4-4 (Kenya)</option>
+        <option value="igcse">IGCSE</option>
+        <option value="ib">International Baccalaureate</option>
+        <option value="waec">WAEC (West Africa)</option>
+        <option value="south-african">South African CAPS</option>
+      </select>
+
+      <!-- Clubs -->
+      <fieldset>
+
+        <legend>Select Clubs to Join</legend>
+
+        <label>
+          <input type="checkbox" name="clubs" value="debate">
+          Debate Club
+        </label>
+
+        <label>
+          <input type="checkbox" name="clubs" value="coding">
+          Coding Club
+        </label>
+
+        <label>
+          <input type="checkbox" name="clubs" value="science">
+          Science Club
+        </label>
+
+        <label>
+          <input type="checkbox" name="clubs" value="arts">
+          Arts & Drama
+        </label>
+
+        <label>
+          <input type="checkbox" name="clubs" value="sports">
+          Sports Club
+        </label>
+
+        <label>
+          <input type="checkbox" name="clubs" value="music">
+          Music Club
+        </label>
+
+      </fieldset>
 
     </div>
 
+    <!-- LOGIN FIELDS -->
     <input
       type="email"
       id="email"
       placeholder="Email"
       required
-    />
+    >
 
     <input
       type="password"
       id="password"
       placeholder="Password"
       required
-    />
+    >
 
     <button type="submit" id="submitBtn">
       Login
@@ -155,6 +253,7 @@
   <p id="status"></p>
 
   <div class="bottom-text">
+
     <span id="switchText">
       Don't have an account?
     </span>
@@ -162,6 +261,7 @@
     <span class="link-btn" id="switchMode">
       Sign Up
     </span>
+
   </div>
 
 </div>
