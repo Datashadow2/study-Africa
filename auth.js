@@ -243,7 +243,10 @@ window.handleSignup = async function () {
     return;
   }
 
-}
+  setLoading(false);
+  showError("Check your email to verify your account before logging in!");
+};  // <-- THIS CLOSING BRACKET WAS MISSING!
+
 // =========================
 // UI HELPERS
 // =========================
