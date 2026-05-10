@@ -6,7 +6,42 @@ import { supabase } from "./supabase.js";
 let failedAttempts = 0;
 let lockoutUntil = null;
 let currentMode = "login";
-let emailConfirmationRequired = true;
+let emailConfirmationRequired = false;  // Set to false for immediate login
+
+// =========================
+// HELPER FUNCTIONS
+// =========================
+function checkLockoutStatus() {
+  const saved = localStorage.getItem("failedAttempts");
+  if (saved) {
+    failedAttempts = parseInt(saved);
+  }
+}
+
+function saveFailedAttempts() {
+  localStorage.setItem("failedAttempts", failedAttempts);
+}
+
+function setLoading(state) {
+  const btn = document.getElementById("submitBtn");
+  if (!btn) return;
+  btn.disabled = state;
+  btn.innerText = state ? "Loading..." : (currentMode === "login" ? "Login" : "Sign Up");
+}
+
+function showError(msg) {
+  alert(msg);
+}
+
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById("password");
+  const toggleBtn = document.getElementById("togglePassword");
+  if (passwordInput && toggleBtn) {
+    const type = passwordInput.type === "password" ? "text" : "password";
+    passwordInput.type = type;
+    toggleBtn.textContent = type === "password" ? "👁️" : "🙈";
+  }
+}
 
 // =========================
 // INIT
@@ -183,7 +218,7 @@ window.handleLogin = async function () {
 };
 
 // =========================
-// SIGNUP (UPGRADED with Religion, Grade, Curriculum, Clubs)
+// SIGNUP
 // =========================
 window.handleSignup = async function () {
   const email = document.getElementById("email")?.value.trim();
@@ -191,57 +226,13 @@ window.handleSignup = async function () {
   const fullName = document.getElementById("fullName")?.value.trim();
   const role = document.getElementById("roleSelect")?.value;
   
-  // New fields
   const religion = document.getElementById("religionSelect")?.value;
   const grade = document.getElementById("gradeSelect")?.value;
   const curriculum = document.getElementById("curriculumSelect")?.value;
   
-  // Clubs (multiple selection)
   const clubCheckboxes = document.querySelectorAll('input[name="clubs"]:checked');
   const clubs = Array.from(clubCheckboxes).map(cb => cb.value);
 
-  // Validation
-  if (!email || !password || !fullName) {
-    showError("Please fill in email, password, and full name");
-    return;
-  }
-
-  if (currentMode === "signup" && !religion) {
-    showError("Please select your religion");
-    return;
-  }
-
-  if (currentMode === "signup" && role === "student" && !grade) {
-    showError("Please select your grade");
-    return;
-  }
-
-  if (currentMode === "signup" && role === "student" && !curriculum) {
-    showError("Please select your curriculum");
-    return;
-  }
-
-  setLoading(true);
-
-  // =========================
-// SIGNUP (UPGRADED with Religion, Grade, Curriculum, Clubs)
-// =========================
-window.handleSignup = async function () {
-  const email = document.getElementById("email")?.value.trim();
-  const password = document.getElementById("password")?.value;
-  const fullName = document.getElementById("fullName")?.value.trim();
-  const role = document.getElementById("roleSelect")?.value;
-  
-  // New fields
-  const religion = document.getElementById("religionSelect")?.value;
-  const grade = document.getElementById("gradeSelect")?.value;
-  const curriculum = document.getElementById("curriculumSelect")?.value;
-  
-  // Clubs (multiple selection)
-  const clubCheckboxes = document.querySelectorAll('input[name="clubs"]:checked');
-  const clubs = Array.from(clubCheckboxes).map(cb => cb.value);
-
-  // Validation
   if (!email || !password || !fullName) {
     showError("Please fill in email, password, and full name");
     return;
@@ -287,18 +278,19 @@ window.handleSignup = async function () {
 
   setLoading(false);
   
-  // Check if email confirmation is required
   if (emailConfirmationRequired) {
     showError("Check your email to verify your account before logging in!");
   } else {
     showError("Account created successfully! Please login.");
-    // Auto-switch to login mode after 2 seconds
     setTimeout(() => {
       toggleAuthMode();
     }, 2000);
   }
 };
-  }
+
+// =========================
+// FORGOT PASSWORD
+// =========================
 function showForgotPasswordModal() {
   const email = document.getElementById("email")?.value.trim();
   if (!email) {
@@ -306,7 +298,6 @@ function showForgotPasswordModal() {
     return;
   }
   
-  // Simple password reset
   supabase.auth.resetPasswordForEmail(email, {
     redirectTo: window.location.origin + "/reset-password.html",
   });
