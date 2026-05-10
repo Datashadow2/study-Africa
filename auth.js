@@ -299,7 +299,6 @@ window.handleSignup = async function () {
   }
 };
   }
-
 function showForgotPasswordModal() {
   const email = document.getElementById("email")?.value.trim();
   if (!email) {
