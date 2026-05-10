@@ -6,6 +6,7 @@ import { supabase } from "./supabase.js";
 let failedAttempts = 0;
 let lockoutUntil = null;
 let currentMode = "login";
+let emailConfirmationRequired = true;
 
 // =========================
 // INIT
