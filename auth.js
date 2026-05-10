@@ -243,27 +243,6 @@ window.handleSignup = async function () {
     return;
   }
 
-  // Insert into profiles table with all new fields
-  const { error: profileError } = await supabase.from("profiles").insert({
-    id: data.user.id,
-    full_name: fullName,
-    email: email,
-    role: role || "student",
-    religion: religion || null,
-    grade: grade || null,
-    curriculum: curriculum || null,
-    clubs: clubs || [],
-    onboarded: false,
-    created_at: new Date().toISOString(),
-  });
-
-  if (profileError) {
-    console.error("Profile insert error:", profileError);
-  }
-
-  setLoading(false);
-  showError("Check your email to verify your account before logging in!");
-};
 
 // =========================
 // UI HELPERS
