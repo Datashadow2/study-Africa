@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   setupEventListeners();
+  
+  // Force UI to match currentMode on page load
+  toggleAuthMode();
 
   const savedEmail = localStorage.getItem("rememberedEmail");
   if (savedEmail) {
@@ -40,7 +43,6 @@ function setupEventListeners() {
   if (form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
-
       if (currentMode === "login") handleLogin();
       else handleSignup();
     });
@@ -66,6 +68,7 @@ function setupEventListeners() {
       showForgotPasswordModal();
     });
   }
+}
 
 // =========================
 // SESSION REDIRECT
@@ -179,16 +182,41 @@ window.handleLogin = async function () {
 };
 
 // =========================
-// SIGNUP
+// SIGNUP (UPGRADED with Religion, Grade, Curriculum, Clubs)
 // =========================
 window.handleSignup = async function () {
   const email = document.getElementById("email")?.value.trim();
   const password = document.getElementById("password")?.value;
   const fullName = document.getElementById("fullName")?.value.trim();
   const role = document.getElementById("roleSelect")?.value;
+  
+  // New fields
+  const religion = document.getElementById("religionSelect")?.value;
+  const grade = document.getElementById("gradeSelect")?.value;
+  const curriculum = document.getElementById("curriculumSelect")?.value;
+  
+  // Clubs (multiple selection)
+  const clubCheckboxes = document.querySelectorAll('input[name="clubs"]:checked');
+  const clubs = Array.from(clubCheckboxes).map(cb => cb.value);
 
+  // Validation
   if (!email || !password || !fullName) {
-    showError("Fill all required fields");
+    showError("Please fill in email, password, and full name");
+    return;
+  }
+
+  if (currentMode === "signup" && !religion) {
+    showError("Please select your religion");
+    return;
+  }
+
+  if (currentMode === "signup" && role === "student" && !grade) {
+    showError("Please select your grade");
+    return;
+  }
+
+  if (currentMode === "signup" && role === "student" && !curriculum) {
+    showError("Please select your curriculum");
     return;
   }
 
@@ -201,6 +229,10 @@ window.handleSignup = async function () {
       data: {
         full_name: fullName,
         role: role || "student",
+        religion: religion || null,
+        grade: grade || null,
+        curriculum: curriculum || null,
+        clubs: clubs || [],
       },
     },
   });
@@ -211,17 +243,26 @@ window.handleSignup = async function () {
     return;
   }
 
-  await supabase.from("profiles").insert({
+  // Insert into profiles table with all new fields
+  const { error: profileError } = await supabase.from("profiles").insert({
     id: data.user.id,
     full_name: fullName,
-    email,
+    email: email,
     role: role || "student",
+    religion: religion || null,
+    grade: grade || null,
+    curriculum: curriculum || null,
+    clubs: clubs || [],
     onboarded: false,
+    created_at: new Date().toISOString(),
   });
 
-  setLoading(false);
+  if (profileError) {
+    console.error("Profile insert error:", profileError);
+  }
 
-  showError("Check your email to verify account");
+  setLoading(false);
+  showError("Check your email to verify your account before logging in!");
 };
 
 // =========================
@@ -249,6 +290,30 @@ function showError(msg) {
 function saveFailedAttempts() {
   localStorage.setItem("failedAttempts", failedAttempts);
 }
+
 function checkLockoutStatus() {}
-function togglePasswordVisibility() {}
-function showForgotPasswordModal() {}
+
+function togglePasswordVisibility() {
+  const passwordInput = document.getElementById("password");
+  const toggleBtn = document.getElementById("togglePassword");
+  if (passwordInput && toggleBtn) {
+    const type = passwordInput.type === "password" ? "text" : "password";
+    passwordInput.type = type;
+    toggleBtn.textContent = type === "password" ? "👁️" : "🙈";
+  }
+}
+
+function showForgotPasswordModal() {
+  const email = document.getElementById("email")?.value.trim();
+  if (!email) {
+    showError("Enter your email address first");
+    return;
+  }
+  
+  // Simple password reset
+  supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + "/reset-password.html",
+  });
+  
+  showError("Password reset link sent to your email!");
+}
