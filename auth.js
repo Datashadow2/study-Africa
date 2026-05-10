@@ -67,15 +67,6 @@ function setupEventListeners() {
     });
   }
 
-  const submitBtn = document.getElementById("submitBtn");
-  if (submitBtn) {
-    submitBtn.addEventListener("click", () => {
-      if (currentMode === "login") handleLogin();
-      else handleSignup();
-    });
-  }
-}
-
 // =========================
 // SESSION REDIRECT
 // =========================
