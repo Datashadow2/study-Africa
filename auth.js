@@ -243,7 +243,7 @@ window.handleSignup = async function () {
     return;
   }
 
-
+}
 // =========================
 // UI HELPERS
 // =========================
